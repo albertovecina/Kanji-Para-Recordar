@@ -1,0 +1,69 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de compilación y Gradle
+.gradle/
+build/
+local.properties
+*.iml
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/codeStyles/
+.idea/assetWizardSettings.xml
+.idea/.name
+.idea/misc.xml
+.idea/vcs.xml
+.idea/compiler.xml
+
+# Archivos de configuración específicos de Android Studio
+*.log
+*.hprof
+*.orig
+captures/
+output.json
+
+# Archivos de prueba
+*.apk
+*.ap_
+*.aar
+*.jar
+*.war
+
+# Archivos del entorno
+.env
+.env.*
+
+# Configuración del sistema operativo para el IDE
+/.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# NDK
+/.cxx/
+
+# Carpetas de generación automática
+**/build/
+**/out/
+
+# Cache de Gradle
+/caches/
+/dependencies/
+
+# Configuración de seguimiento para Git
+**/.DS_Store
+
+# Cache de empaquetado
+.packaged-dependencies/
+
+# Archivos específicos del desarrollador
+*.keystore
+*.jks
+*.pro.user
+*.user
+
+# Archivos específicos de Jetpack Compose y Build
+.layoutlib-cache/
+navigation.xml
