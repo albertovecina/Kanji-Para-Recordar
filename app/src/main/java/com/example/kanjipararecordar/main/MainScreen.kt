@@ -1,4 +1,4 @@
-package com.example.kanjipararecordar.ui
+package com.example.kanjipararecordar.main
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -16,6 +16,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -23,18 +24,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.kanjipararecordar.data.DataSource
+import com.example.kanjipararecordar.domain.model.Kanji
 import com.example.kanjipararecordar.domain.model.Route
-import com.example.kanjipararecordar.domain.usecase.GetKanjiUseCase
+import com.example.kanjipararecordar.domain.usecase.GetKanjiListUseCase
+import com.example.kanjipararecordar.ui.KanjiList
 import com.example.kanjipararecordar.ui.theme.KanjiParaRecordarTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navigationController: NavController) {
+fun MainScreen(viewModel: MainViewModel, navigationController: NavController) {
     KanjiParaRecordarTheme {
         val context = LocalContext.current
-        val dataSource = DataSource(context)
-        val kanjiList = GetKanjiUseCase(dataSource).invoke()
-        var query by rememberSaveable { mutableStateOf("") }
+
+        val kanjiList by viewModel.kanjiList.observeAsState(emptyList())
+        val query by viewModel.query.observeAsState("")
         Scaffold(modifier = Modifier.fillMaxSize(),
             topBar = {
                 SearchBar(modifier = Modifier
@@ -46,7 +49,7 @@ fun MainScreen(navigationController: NavController) {
                     inputField = {
                         SearchBarDefaults.InputField(
                             query = query,
-                            onQueryChange = { query = it },
+                            onQueryChange = { viewModel.onQueryChange(it) },
                             onSearch = { },
                             expanded = false,
                             leadingIcon = {
@@ -58,7 +61,7 @@ fun MainScreen(navigationController: NavController) {
                                 }
                             },
                             trailingIcon = {
-                                IconButton({ query = "" }) {
+                                IconButton({ viewModel.onClearIconClick() }) {
                                     Icon(
                                         imageVector = Icons.Default.Clear,
                                         contentDescription = "Clear"
@@ -75,7 +78,9 @@ fun MainScreen(navigationController: NavController) {
                 KanjiList(
                     Modifier
                         .fillMaxSize(), kanjiList.filter { it.meaning.contains(query) },
-                    onItemClick = { navigationController.navigate(Route.KanjiDetail.route) }
+                    onItemClick = {
+                        navigationController.navigate(Route.KanjiDetail.createRoute(it))
+                    }
                 )
             }
         }

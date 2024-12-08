@@ -16,11 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import com.example.kanjipararecordar.domain.model.Kanji
 import com.example.kanjipararecordar.ui.theme.KanjiParaRecordarTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KanjiDetailScreen(navigationController: NavController) {
+fun KanjiDetailScreen(navigationController: NavController, kanji: Kanji) {
     KanjiParaRecordarTheme {
         Scaffold(modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -42,7 +43,7 @@ fun KanjiDetailScreen(navigationController: NavController) {
                     .padding(innerPadding)
                     .background(Color.Red)
             ) {
-                Text("HOLAAAAA")
+                Text("KANJI: ${kanji.character} ${kanji.meaning}")
             }
         }
 
