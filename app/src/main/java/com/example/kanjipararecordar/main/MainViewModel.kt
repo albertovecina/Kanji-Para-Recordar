@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kanjipararecordar.domain.model.Kanji
 import com.example.kanjipararecordar.domain.usecase.GetKanjiListUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel(
+@HiltViewModel
+class MainViewModel @Inject constructor(
     private val getKanjiListUseCase: GetKanjiListUseCase
 ) : ViewModel() {
 

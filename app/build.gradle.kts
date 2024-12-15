@@ -4,11 +4,18 @@ plugins {
     alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "2.0.21"
     id("kotlin-parcelize")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace = "com.example.kanjipararecordar"
     compileSdk = 35
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId = "com.example.kanjipararecordar"
@@ -64,6 +71,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    kapt(libs.hilt.android.compiler)
 
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -72,5 +83,13 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation (libs.gson)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    implementation(libs.converter.gson)
 
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

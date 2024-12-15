@@ -17,22 +17,16 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.kanjipararecordar.data.DataSource
-import com.example.kanjipararecordar.domain.model.Kanji
 import com.example.kanjipararecordar.domain.model.Route
-import com.example.kanjipararecordar.domain.usecase.GetKanjiListUseCase
-import com.example.kanjipararecordar.ui.KanjiList
 import com.example.kanjipararecordar.ui.theme.KanjiParaRecordarTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel, navigationController: NavController) {
+fun MainScreen(navigationController: NavController, viewModel: MainViewModel = hiltViewModel()) {
     KanjiParaRecordarTheme {
         val context = LocalContext.current
 

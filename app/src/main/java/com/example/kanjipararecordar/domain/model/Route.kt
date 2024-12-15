@@ -1,8 +1,7 @@
 package com.example.kanjipararecordar.domain.model
 
+import com.example.kanjipararecordar.core.toJson
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @Serializable
 sealed class Route(val route: String) {
@@ -12,6 +11,6 @@ sealed class Route(val route: String) {
     @Serializable
     object KanjiDetail : Route("detail/{kanji}") {
         const val ARG_KANJI = "kanji"
-        fun createRoute(kanji: Kanji) = "detail/${Json.encodeToString(kanji)}"
+        fun createRoute(kanji: Kanji) = "detail/${kanji.toJson()}"
     }
 }

@@ -1,4 +1,4 @@
-package com.example.kanjipararecordar.ui
+package com.example.kanjipararecordar.detail.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,13 +15,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.kanjipararecordar.detail.KanjiDetailViewModel
 import com.example.kanjipararecordar.domain.model.Kanji
 import com.example.kanjipararecordar.ui.theme.KanjiParaRecordarTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KanjiDetailScreen(navigationController: NavController, kanji: Kanji) {
+fun KanjiDetailScreen(navigationController: NavController, kanji: Kanji, viewModel: KanjiDetailViewModel = hiltViewModel()) {
     KanjiParaRecordarTheme {
         Scaffold(modifier = Modifier.fillMaxSize(),
             topBar = {
