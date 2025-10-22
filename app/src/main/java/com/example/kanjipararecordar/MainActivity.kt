@@ -14,12 +14,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.kanjipararecordar.core.fromJson
+import com.example.kanjipararecordar.data.DataSource
 import com.example.kanjipararecordar.detail.KanjiDetailViewModel
 import com.example.kanjipararecordar.detail.domain.SearchKanjiUseCase
 import com.example.kanjipararecordar.detail.ui.KanjiDetailScreen
 import com.example.kanjipararecordar.di.ApplicationModule
 import com.example.kanjipararecordar.domain.model.Kanji
 import com.example.kanjipararecordar.domain.model.Route
+import com.example.kanjipararecordar.domain.usecase.GetKanjiUseCase
 import com.example.kanjipararecordar.main.MainScreen
 import com.example.kanjipararecordar.util.getCompatParcelable
 import com.google.gson.Gson
@@ -38,6 +40,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val dataSource = DataSource(this)
         setContent {
             val navigationController = rememberNavController()
             val detailViewModel: KanjiDetailViewModel = KanjiDetailViewModel(getKanjiUseCase)
