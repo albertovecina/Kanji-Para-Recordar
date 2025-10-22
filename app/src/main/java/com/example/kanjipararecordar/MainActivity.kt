@@ -1,104 +1,76 @@
 package com.example.kanjipararecordar
 
+import android.content.ContextWrapper
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.kanjipararecordar.core.fromJson
 import com.example.kanjipararecordar.data.DataSource
+import com.example.kanjipararecordar.detail.KanjiDetailViewModel
+import com.example.kanjipararecordar.detail.domain.SearchKanjiUseCase
+import com.example.kanjipararecordar.detail.ui.KanjiDetailScreen
+import com.example.kanjipararecordar.di.ApplicationModule
+import com.example.kanjipararecordar.domain.model.Kanji
+import com.example.kanjipararecordar.domain.model.Route
 import com.example.kanjipararecordar.domain.usecase.GetKanjiUseCase
-import com.example.kanjipararecordar.ui.theme.KanjiParaRecordarTheme
+import com.example.kanjipararecordar.main.MainScreen
+import com.example.kanjipararecordar.util.getCompatParcelable
+import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
+import kotlinx.serialization.json.Json
+import javax.inject.Inject
 
 @ExperimentalMaterial3Api
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var getKanjiUseCase: SearchKanjiUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val dataSource = DataSource(this)
-        val kanjiList = GetKanjiUseCase(dataSource).invoke()
         setContent {
-            var query by rememberSaveable { mutableStateOf("") }
-            var active by rememberSaveable { mutableStateOf(false) }
-            KanjiParaRecordarTheme {
-                Scaffold(modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        SearchBar(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                ,
-                            active = active,
-                            onActiveChange = {
-                                active = it
-                            },
-                            onQueryChange = {
-                                query = it
-                            },
-                            onSearch = { },
-                            leadingIcon = {
-                                if (active)
-                                    IconButton(onClick = {
-                                        query = ""
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = "Back"
-                                        )
-                                    }
-                                else
-                                    IconButton(onClick = {}) {
-                                        Icon(
-                                            imageVector = Icons.Default.Search,
-                                            contentDescription = "Search"
-                                        )
-                                    }
-                            },
-                            query = query
-                        ) {
-                            val filteredList = kanjiList.filter { it.meaning.contains(query) || it.character.contains(query) }
-                            KanjiList(
-                                Modifier
-                                    .fillMaxSize(), filteredList
-                            )
-                        }
-                    }) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        KanjiList(
-                            Modifier
-                                .fillMaxSize(), kanjiList
+            val navigationController = rememberNavController()
+            val detailViewModel: KanjiDetailViewModel = KanjiDetailViewModel(getKanjiUseCase)
+            NavHost(navController = navigationController, startDestination = Route.MainScreen) {
+                composable<Route.MainScreen> { MainScreen(navigationController) }
+
+                composable(
+                    route = Route.KanjiDetail.route, arguments = listOf(
+                        navArgument(
+                            name = Route.KanjiDetail.ARG_KANJI,
+                            builder = { type = parcelableType<Kanji>() },
                         )
-                    }
+                    )
+                ) { backStackEntry ->
+                    val kanji: Kanji = backStackEntry.arguments?.getCompatParcelable(Route.KanjiDetail.ARG_KANJI) ?: Kanji("", "")
+                    KanjiDetailScreen(navigationController, kanji, detailViewModel)
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    KanjiParaRecordarTheme {
-        Greeting("Android")
+inline fun <reified T : Parcelable> ContextWrapper.parcelableType(isNullableAllowed: Boolean = false) = object : NavType<T>(isNullableAllowed) {
+
+    override fun get(bundle: Bundle, key: String): T? = bundle.getCompatParcelable(key)
+
+    override fun parseValue(value: String): T = fromJson(value)
+
+    override fun put(bundle: Bundle, key: String, value: T) {
+        bundle.putParcelable(key, value)
     }
 }

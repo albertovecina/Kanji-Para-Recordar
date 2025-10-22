@@ -1,10 +1,12 @@
 package com.example.kanjipararecordar.data
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.InputStream
+import javax.inject.Inject
 import kotlin.to
 
-class DataSource(private val context: Context) {
+class DataSource @Inject constructor(@ApplicationContext private val context: Context) {
 
     val file1: String = "kanji1-1200.csv"
     val file2: String = "kanji1201-2200.csv"
